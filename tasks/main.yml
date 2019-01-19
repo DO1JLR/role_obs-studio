@@ -1,0 +1,116 @@
+---
+
+- name: Install requirements to build obs-studio
+  apt:
+    state: latest
+    update_cache: yes
+    cache_valid_time: 43200
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - build-essential
+      - pkg-config
+      - cmake
+      - git-core
+      - checkinstall
+      - ffmpeg
+      - libx11-dev
+      - libgl1-mesa-dev
+      - libvlc-dev
+      - libpulse-dev
+      - libxcomposite-dev
+      - libxinerama-dev
+      - libv4l-dev
+      - libudev-dev
+      - libfreetype6-dev
+      - libfontconfig-dev
+      - qtbase5-dev
+      - libqt5x11extras5-dev
+      - libx264-dev 
+      - libxcb-xinerama0-dev
+      - libxcb-shm0-dev
+      - libjack-jackd2-dev
+      - libcurl4-openssl-dev 
+      - swig 
+      - libtexluajit-dev
+      - libluajit-5.1-dev 
+      - python3-dev
+  when: compile_obs
+
+- apt_repository:
+    repo: "deb https://debian.ethz.ch/debian/ stretch stable main contrib non-free"
+    state: present
+  when: compile_obs
+
+- name: Install inonfree requirements to build obs-studio
+  apt:
+    state: latest
+    update_cache: yes
+    cache_valid_time: 43200
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - libavcodec-dev
+      - libavfilter-dev
+      - libavdevice-dev
+      - libfdk-aac-dev 
+  when: compile_obs
+
+- name: Install old version of obs-studio
+  apt:
+    state: latest
+    update_cache: yes
+    cache_valid_time: 43200
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - obs-studio
+      - ffmpeg
+  when: compile_obs == false
+
+- name: Create cache directory
+  file:
+    path: /var/cache/toolbox-obs-studio
+    state: directory
+
+- name: Check if obs should be installed
+  copy:
+    src: files/README.txt
+    dest: /var/cache/toolbox-obs-studio/README.txt
+  register: obs_installed
+
+- name: clone obs-studio source
+  git:
+    repo: 'https://github.com/obsproject/obs-studio.git'
+    dest: /var/cache/toolbox-obs-studio/git
+    clone: yes
+    update: yes
+    recursive: yes
+  when: obs_installed.changed
+
+- name: Create cache directory
+  file:
+    path: /var/cache/toolbox-obs-studio/git/build
+    state: directory
+  when: obs_installed.changed
+
+- name: cmake obs-studio
+  command:  cmake -DUNIX_STRUCTURE=1 -DCMAKE_INSTALL_PREFIX=/usr ..
+  args:
+    chdir: /var/cache/toolbox-obs-studio/git/build
+  when: obs_installed.changed
+
+- name: make obs-studio
+  make:
+    chdir: /var/cache/toolbox-obs-studio/git/build/
+    target: all
+    params:
+      NUM_THREADS: 4
+  when: obs_installed.changed
+
+- name: checkinstall obs-studio
+  command: checkinstall --pkgname=obs-studio --fstrans=no --backup=no --pkgversion="$(date +%Y%m%d)-git" --deldoc=yes 
+  args:
+    chdir: /var/cache/toolbox-obs-studio/git/build
+  when: obs_installed.changed
+
