@@ -79,6 +79,10 @@
     dest: /var/cache/toolbox-obs-studio/README.txt
   register: obs_installed
 
+- pause:
+    promt: OBS Installation will be skipped. To Change that please delete /var/cache/toolbox-obs-studio/README.txt
+  when: obs_installed.ok
+
 - name: clone obs-studio source
   git:
     repo: 'https://github.com/obsproject/obs-studio.git'
@@ -108,9 +112,14 @@
       NUM_THREADS: 4
   when: obs_installed.changed
 
-- name: checkinstall obs-studio
-  command: checkinstall --pkgname=obs-studio --fstrans=no --backup=no --pkgversion="$(date +%Y%m%d)-git" --deldoc=yes 
-  args:
-    chdir: /var/cache/toolbox-obs-studio/git/build
+#- name: checkinstall obs-studio
+#  command: checkinstall --pkgname=obs-studio --fstrans=no --backup=no --pkgversion="$(date +%Y%m%d)-git" --deldoc=yes 
+#  args:
+#    chdir: /var/cache/toolbox-obs-studio/git/build
+#  when: obs_installed.changed
+
+- pause:
+    prompt: 'Please install obs-studio by habd wit this command: cd /var/cache/toolbox-obs-studio/git/build/; sudo checkinstall --pkgname=obs-studio --fstrans=no --backup=no  --pkgversion="$(date +%Y%m%d)-git" --deldoc=yes '
   when: obs_installed.changed
+
 
