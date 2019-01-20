@@ -80,8 +80,8 @@
   register: obs_installed
 
 - pause:
-    promt: OBS Installation will be skipped. To Change that please delete /var/cache/toolbox-obs-studio/README.txt
-  when: obs_installed.ok
+    prompt: OBS Installation will be skipped. To Change that please delete /var/cache/toolbox-obs-studio/README.txt
+  when: obs_installed.changed == false
 
 - name: clone obs-studio source
   git:
