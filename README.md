@@ -1,5 +1,6 @@
  Ansible role to install obs-studio on Debian
 -----------------------------------------------
+[![Build Status](https://travis-ci.org/DO1JLR/role_obs-studio.svg?branch=master)](https://travis-ci.org/DO1JLR/role_obs-studio)
 
 This ansible role compiles obs-studio on debian 9.
 
