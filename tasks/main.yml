@@ -35,6 +35,7 @@
       - libtexluajit-dev
       - libluajit-5.1-dev 
       - python3-dev
+      - apt-transport-http
   when: compile_obs
 
 - apt_repository:
