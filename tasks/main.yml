@@ -5,37 +5,7 @@
     state: latest
     update_cache: yes
     cache_valid_time: 43200
-    name: "{{ packages }}"
-  vars:
-    packages:
-      - build-essential
-      - pkg-config
-      - cmake
-      - git-core
-      - checkinstall
-      - ffmpeg
-      - libx11-dev
-      - libgl1-mesa-dev
-      - libvlc-dev
-      - libpulse-dev
-      - libxcomposite-dev
-      - libxinerama-dev
-      - libv4l-dev
-      - libudev-dev
-      - libfreetype6-dev
-      - libfontconfig-dev
-      - qtbase5-dev
-      - libqt5x11extras5-dev
-      - libx264-dev 
-      - libxcb-xinerama0-dev
-      - libxcb-shm0-dev
-      - libjack-jackd2-dev
-      - libcurl4-openssl-dev 
-      - swig 
-      - libtexluajit-dev
-      - libluajit-5.1-dev 
-      - python3-dev
-      - apt-transport-http
+    name: "{{ obs_build_packages }}"
   when: compile_obs
 
 - apt_repository:
@@ -43,7 +13,7 @@
     state: present
   when: compile_obs
 
-- name: Install inonfree requirements to build obs-studio
+- name: Install nonfree requirements to build obs-studio
   apt:
     state: latest
     update_cache: yes
