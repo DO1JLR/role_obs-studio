@@ -1,17 +1,19 @@
 ---
+- include_tasks: versioncheck.yml
+  when: submodules_versioncheck|bool
 
 - name: Install requirements to build obs-studio
   apt:
-    state: latest
+    state: present
     update_cache: yes
     cache_valid_time: 43200
     name: "{{ obs_build_packages }}"
-  when: compile_obs
+  when: compile_obs|bool
 
 - apt_repository:
     repo: "deb https://debian.ethz.ch/debian/ stretch stable main contrib non-free"
     state: present
-  when: compile_obs
+  when: compile_obs|bool
 
 - name: Install nonfree requirements to build obs-studio
   apt:
@@ -24,8 +26,8 @@
       - libavcodec-dev
       - libavfilter-dev
       - libavdevice-dev
-      - libfdk-aac-dev 
-  when: compile_obs
+      - libfdk-aac-dev
+  when: compile_obs|bool
 
 - name: Install old version of obs-studio
   apt:
@@ -37,7 +39,7 @@
     packages:
       - obs-studio
       - ffmpeg
-  when: compile_obs == false
+  when: not compile_obs|bool
 
 - name: Create cache directory
   file:
@@ -52,7 +54,8 @@
 
 - pause:
     prompt: OBS Installation will be skipped. To Change that please delete /var/cache/toolbox-obs-studio/README.txt
-  when: obs_installed.changed == false
+    seconds: 23
+  when: not obs_installed.changed
 
 - name: clone obs-studio source
   git:
@@ -92,5 +95,3 @@
 - pause:
     prompt: 'Please install obs-studio by habd wit this command: cd /var/cache/toolbox-obs-studio/git/build/; sudo checkinstall --pkgname=obs-studio --fstrans=no --backup=no  --pkgversion="$(date +%Y%m%d)-git" --deldoc=yes '
   when: obs_installed.changed
-
-
