@@ -32,4 +32,5 @@ obs_build_packages:
   - libtexluajit-dev
   - libluajit-5.1-dev 
   - python3-dev
- 
+
+submodules_versioncheck: true 

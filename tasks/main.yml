@@ -1,6 +1,6 @@
 ---
 - include_tasks: versioncheck.yml
-  when: submodules_versioncheck|bool
+  when: submodules_versioncheck | bool
 
 - name: Install requirements to build obs-studio
   apt:
@@ -58,6 +58,7 @@
   when: not obs_installed.changed
 
 - name: clone obs-studio source
+  become: true
   git:
     repo: 'https://github.com/obsproject/obs-studio.git'
     dest: /var/cache/toolbox-obs-studio/git
