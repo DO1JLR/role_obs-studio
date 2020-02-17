@@ -2,6 +2,13 @@
 -----------------------------------------------
 [![Build Status](https://travis-ci.org/DO1JLR/role_obs-studio.svg?branch=master)](https://travis-ci.org/DO1JLR/role_obs-studio)
 
+
+```
+WARNING
+
+This role is a little bit outdated and need at least a review bevore production usage!!!
+```
+
 This ansible role compiles obs-studio on debian 9.
 
 Information about compiling comes from the official obs compile instructions (in the wiki).
